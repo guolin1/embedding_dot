@@ -11,7 +11,7 @@ setup(
             ],
             extra_compile_args={
                 'cxx': ['-O3', '-march=native'],
-                'nvcc': ['-O3', '-Xptxas', '-O3,-v', '-arch=sm_60'],
+                'nvcc': ['-O3', '-Xptxas', '-O3,-v'],
             },
         ),
     ],
