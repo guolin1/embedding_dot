@@ -3,7 +3,8 @@ from torch import nn
 from torch.autograd import Function
 import torch
 
-import embedding_dot_cuda
+if torch.cuda.is_available():
+    import embedding_dot_cuda
 
 class EmbeddingDotFunction(Function):
     @staticmethod
@@ -22,4 +23,11 @@ class EmbeddingDotFunction(Function):
         embedding1_grad, embedding2_grad = embedding_dot_cuda.backward(grad_output, embedding1, embedding2, indices)
         return embedding1_grad, embedding2_grad, None
 
-embedding_dot = EmbeddingDotFunction.apply
+def embedding_dot(embedding1, embedding2, indices):
+    if embedding1.is_cuda:
+        return EmbeddingDotFunction.apply(embedding1, embedding2, indices)
+    else:
+        A = nn.functional.embedding(indices[:, 0], embedding1)
+        B = nn.functional.embedding(indices[:, 1], embedding2)
+
+        return torch.sum(A * B, dim=1)
