@@ -26,5 +26,5 @@ setup(
     cmdclass={
         'build_ext': BuildExtension
     },
-    packages=find_packages(),
+    py_modules=['embedding_dot'],
 )
