@@ -3,7 +3,7 @@
 #include <vector>
 #include <iostream>
 
-#include <THC/THCGeneral.h>
+#include <c10/cuda/CUDAException.h>
 
 #include <stdio.h>
 
@@ -63,7 +63,8 @@ torch::Tensor embedding_dot_forward(
         embedding1.stride(0), embedding2.stride(0), indices.stride(0),
         embedding1.size(1), indices.size(0));
     
-    THCudaCheck(cudaGetLastError());
+
+    C10_CUDA_CHECK(cudaGetLastError());
 
     return output;
 }
@@ -120,7 +121,7 @@ std::vector<torch::Tensor> embedding_dot_backward(
         embedding1.stride(0), indices.stride(0),
         embedding1_grad.size(1), indices.size(0));
 
-    THCudaCheck(cudaGetLastError());
+    C10_CUDA_CHECK(cudaGetLastError());
 
     std::vector<torch::Tensor> result;
     result.emplace_back(std::move(embedding1_grad));
